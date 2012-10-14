@@ -1,165 +1,86 @@
 #ifndef _L_AUTOMATON
 #define _L_AUTOMATON
 
-#include "LMatrix.hpp"
-#include "Set.hpp"
-#include <string>
+#include "lmatrix.hpp"
+#include "set.hpp"
+#include <QString>
+#include <QObject>
 #include <map>
+
+#define ASCIIZEROCODE 48 //Zero code in ascii table
+#define LLIVE 1
+#define LDEAD 0
 
 typedef unsigned char statecode;
 
-class AutomatonState {
-private: 
-    double color[3];
-    std::string name;
-    int lifespan;
-public:
-    statecode code;
-    AutomatonState()
-    {
-        name = "Unnamed state";
-        color[0] = 0.0;
-        color[1] = 0.0;
-        color[2] = 0.0;
-        code = 0;
-        lifespan = 0;
-    }
-
-    AutomatonState(statecode c, double r, double g, double b, std::string n, int l = 0)
-    {
-        code = c;
-        color[0] =  r;
-        color[1] = g;
-        color[2] = b;
-        name = n;
-        lifespan = l;
-    }
-    
-    double *GetColor(void)
-    {
-        return color;
-    }
-    
-    AutomatonState &operator = (const AutomatonState &right)
-    {
-        if (this == &right)
-            return *this;
-        name = right.name;
-        color[0] = right.color[0];
-        color[1] = right.color[1];
-        color[2] = right.color[2];
-        code = right.code;
-        lifespan = right.lifespan;
-        return *this;
-    }
-};
-
-class AutomatonTransition {
-private: 
-    std::map <statecode, Set<int> > requirements;
-    statecode met_code, unmet_code;
-public:
-    std::string name;
-    AutomatonTransition(statecode m, statecode um, std::map <statecode, Set<int> > req, std::string n)
-    {
-        met_code = m;
-        unmet_code = um;
-        requirements = req;
-        name = n;
-    }
-
-    AutomatonTransition()
-    {
-        name = "Unnamed transition";
-    }
-
-    AutomatonTransition &operator = (const AutomatonTransition &right)
-    {
-        if (this == &right)
-            return *this;
-        name = right.name;
-        requirements = right.requirements;
-        met_code = right.met_code;
-        unmet_code = right.unmet_code;
-        return *this;
-    }
-
-    statecode &operator () (std::map <statecode, int> neighbours)
-    {
-        bool r_met = true;
-        std::map <statecode, Set<int> >::iterator it = requirements.begin();
-        for (; it != requirements.end(); it++) {
-            statecode req_code =(*it).first;
-            int neighbour_count = (*neighbours.find(req_code)).second;
-            if ( !(*it).second.in(neighbour_count) ) r_met = false;
-        }
-
-        if (r_met) return met_code;
-        else return unmet_code;
-    }
-
-};
-
-
-class Automaton {
+class Automaton : public QObject {
+    Q_OBJECT
 private:
-    int width, height;
+    int awidth, aheight;
     LMatrix <statecode> field1;
     LMatrix <statecode> field2;
     LMatrix <statecode> *back;
-    std::map <statecode, int> Neighbours(int x, int y);
+    Set <int> bear, survive;
+    int Neighbours(int x, int y, statecode code) const;
+    int counter, counter_max;
 public:
-    std::map <statecode, AutomatonTransition> Transition;
-    std::map <statecode, AutomatonState> State;
     std::map <statecode, int> StateCount;
     LMatrix <statecode> *front;
-
-    Automaton()
-    {
-        front = NULL;
-        back = NULL;
-    }
-    
     statecode &operator () (int i, int j)
     {
         return (*front)(i,j);
     }
     
-    Automaton(int w, int h) : width(w), height(h)
+    Automaton(int w, int h, QString rule, QObject *parent=0) :
+        awidth(w), aheight(h), QObject(parent)
     {
-        field1 = LMatrix <statecode> (width, height);
-        field2 = LMatrix <statecode> (width, height);
+        field1 = LMatrix <statecode> (awidth, aheight);
+        field2 = LMatrix <statecode> (awidth, aheight);
         front = &field1;
         back = &field2;
+        counter = 0;
+        counter_max = 50;
 
-        for (int i=0; i<height; i++)
-            for (int j=0; j<width; j++)
+        for (int i=0; i<aheight; i++)
+            for (int j=0; j<awidth; j++)
                 field1(i,j) = field2(i,j) = 0;
-        StateCount[0] = width*height;
+        StateCount[0] = awidth*aheight;
+
+        int find = rule.indexOf("/");
+        for (int i = find+1; i<rule.length(); i++) {
+            int count = rule[i].toAscii() - ASCIIZEROCODE;
+            bear.add(count);
+        }
+        for (int i = 0; i<find; i++) {
+            int count = rule[i].toAscii() - ASCIIZEROCODE;
+            survive.add(count);
+        }
     }
 
     Automaton &operator = (const Automaton &right)
     {
         if (this == &right)
             return *this;
-        width = right.width;
-        height = right.height;
+        awidth = right.awidth;
+        aheight = right.aheight;
 
         field1 = right.field1;
         field2 = right.field2;
-
-        Transition = right.Transition;
-        State = right.State;
+        bear = right.bear;
+        survive = right.survive;
         StateCount = right.StateCount;
         front = &field1;
         back = &field2;
         return *this;
     }
+    void Draw(int x, int y, statecode val);
 
-    void AddState(AutomatonState s, AutomatonTransition t);
+public slots:
+    void Randomize();
     void Clear();
     void Update();
-    void Draw(int x, int y, statecode val);
-    void Randomize();
+    void ChangeSpeed(int speed);
+signals:
+    void updated();
 };
 #endif

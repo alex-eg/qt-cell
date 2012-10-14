@@ -3,24 +3,36 @@
 GLWidget::GLWidget(QWidget *parent) : QGLWidget(parent)
 {
     setMouseTracking(true);
-    angle = 0;
+
 }
 
-void GLWidget::updateLogic(void)
+GLWidget::~GLWidget()
 {
-    angle += 0.5;
-    if (angle == 360) angle = 0;
+    delete g;
 }
 
 void GLWidget::initializeGL(void)
 {
-    glClearColor(0.07, 0.03, 0.05, 0.0);
+    g = new Graphics(width(), height());
+
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_DEPTH_TEST);
+    glClearColor(0.07, 0.03, 0.05, 0.0);
+
+    GLfloat w = width();
+    GLfloat h = height();
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0, w, h, 0, -1, 1);
+    glMatrixMode(GL_MODELVIEW);
+    glTranslatef(0.375, 0.375, 0.0);
+
 }
 
 void GLWidget::resizeGL(int w, int h)
 {
+    glViewport(0, 0, w, h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glOrtho(0, w, h, 0, -1, 1);
@@ -28,17 +40,11 @@ void GLWidget::resizeGL(int w, int h)
     glTranslatef(0.375, 0.375, 0.0);
 }
 
-void GLWidget::paintGL(void)
+void GLWidget::paintGL()
 {
-    updateLogic();
+    glClear(GL_COLOR_BUFFER_BIT);
     glPushMatrix();
-    glRotatef(angle, 0.0, 0.0, 1.0);
-    glClearColor(0.07, 0.03, 0.05, 0.0);
-    glBegin(GL_POLYGON);
-    glVertex2d(100,100);
-    glVertex2d(400,100);
-    glVertex2d(100,400);
-    glEnd();
+    if (life) g->Draw(*life);
     glPopMatrix();
 }
 
@@ -52,7 +58,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
 
 }
 
-void GLWidget::keyPressEvent(QKeyEvent *event)
+void GLWidget::setAutomaton(Automaton* aut)
 {
-
+    life=aut;
 }

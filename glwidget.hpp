@@ -2,26 +2,31 @@
 #define GLWIDGET_H
 
 #include <QGLWidget>
-#include <QObject>
 #include <QMouseEvent>
 #include <QKeyEvent>
+
+#include "graphics.hpp"
+#include "automaton.hpp"
 
 class GLWidget : public QGLWidget
 {
     Q_OBJECT
 private:
-    float angle;
-    void updateLogic(void);
+    Graphics *g;
+    Automaton *life;
 public:
-    GLWidget(QWidget *parent);
-
+    GLWidget(QWidget *parent = 0);
+    ~GLWidget();
+    void setAutomaton(Automaton* aut);
 protected:
     void initializeGL(void);
     void resizeGL(int w, int h);
-    void paintGL(void);
+    void paintGL();
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
-    void keyPressEvent(QKeyEvent *event);
+signals:
+    void updateAutomata();
+    void randomizeAutomata();
 };
 
 #endif // GLWIDGET_H

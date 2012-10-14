@@ -4,19 +4,25 @@
 
 TEMPLATE = app
 TARGET = 
+
 DEPENDPATH += .
+
 INCLUDEPATH += .
+
 QT += opengl
 
+QMAKE_EXT_H = .hpp
 # Input
 HEADERS += \
     glwidget.hpp \
     mainwindow.hpp \
-    Automaton.hpp \
-    Set.hpp \
-    LMatrix.hpp \
-    Graphics.hpp
+    ltimer.hpp \
+    graphics.hpp \
+    lmatrix.hpp \
+    set.hpp \
+    automaton.hpp
 FORMS += mainwindow.ui
 SOURCES += glwidget.cpp main.cpp mainwindow.cpp \
-    Automaton.cpp \
-    Graphics.cpp
+    ltimer.cpp \
+    automaton.cpp \
+    graphics.cpp
