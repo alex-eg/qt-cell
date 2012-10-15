@@ -1,7 +1,7 @@
 #include "graphics.hpp"
 
-Grid::Grid(int w, int h, int cllsz) :
-    height(h), width(w), cellsize(cllsz){}
+Grid::Grid(int w, int h, int cllsz, QObject *parent) :
+    height(h), width(w), cellsize(cllsz), QObject(parent){}
 
 Grid &Grid::operator =(const Grid &right)
 {
@@ -13,14 +13,19 @@ Grid &Grid::operator =(const Grid &right)
     return *this;
 }
 
-int Grid::GetHeight(void)
+int Grid::GetHeight() const
 {
     return height;
 }
 
-int Grid::GetWidth(void)
+int Grid::GetWidth() const
 {
     return width;
+}
+
+int Grid::GetCellsize() const
+{
+    return cellsize;
 }
 
 void Grid::DrawBorder()
@@ -47,7 +52,7 @@ void Grid::DrawBorder()
     glEnd();
 }
 
-void Grid::Draw()
+void Grid::DrawGrid()
 {
     glColor3f(0.8, 0.8, 0.8);
     for(int i = 1; i<=width; i++) {
@@ -102,45 +107,49 @@ inline void Grid::FillCell(int x, int y, double *color)
 
 
 /* --=== Graphics class ===-- */
-Graphics::Graphics()
+Graphics::Graphics(QObject *parent) : Grid(40,40,10,parent)
 {
-    SDL_OGL.x = SDL_OGL.y = 0.375;
-    width = height = 800;
-    grid = new Grid(40,40,10);
+    vwidth = vheight = 800;
 }
 
 Graphics::~Graphics()
 {
-    delete grid;
+
 }
 
-Graphics::Graphics(int w, int h) : width(w), height(h)
+double Graphics::Getdx()
 {
-    SDL_OGL.x = 0.375;
-    SDL_OGL.y = 0.375;
-    grid = new Grid(40,40,10);
-    dx = (width - 40 * 10 - 40) / 2;
-    dy = (height - 40 * 10 - 40) / 2;
+    return dx;
+}
+
+double Graphics::Getdy()
+{
+    return dy;
+}
+
+Graphics::Graphics(int w, int h, QObject *parent) :
+    vwidth(w), vheight(h), Grid(40,40,10,parent)
+{
+
+    dx = (vwidth - 40 * 10 - 40) / 2;
+    dy = (vheight - 40 * 10 - 40) / 2;
 }
 
 Graphics &Graphics::operator = (const Graphics &right)
 {
     if (this == &right)
         return *this;
-    SDL_OGL.x = right.SDL_OGL.x;
-    SDL_OGL.y = right.SDL_OGL.y;
-    width = right.width;
-    height = right.height;
-    *grid = *right.grid;
+    vwidth = right.vwidth;
+    vheight = right.vheight;
     return *this;
 }
 
-void Graphics::Draw(void)
+void Graphics::Draw()
 {
     glPushMatrix();
     glTranslatef(dx,dy,0.0);
-    grid->Draw();
-    grid->DrawBorder();
+    DrawGrid();
+    DrawBorder();
     glPopMatrix();
 }
 
@@ -148,7 +157,7 @@ void Graphics::Draw(Automaton &a)
 {
     glPushMatrix();
     glTranslatef(dx,dy,0.0);
-    grid->DrawWithMap(a);
-    grid->DrawBorder();
+    DrawWithMap(a);
+    DrawBorder();
     glPopMatrix();
 }

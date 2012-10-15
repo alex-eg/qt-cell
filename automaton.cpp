@@ -4,6 +4,7 @@
 
 void Automaton::Update(void)
 {
+    if (!running) return;
     if (counter_max == 100) return;
     if (counter < counter_max) {
         counter++;
@@ -11,17 +12,23 @@ void Automaton::Update(void)
     }
 
     counter = 0;
-    for (int i=0; i<aheight; i++)
-        for (int j=0; j<awidth; j++) {
+    for (int i = 0; i < aheight; i++)
+        for (int j = 0; j < awidth; j++) {
             StateCount[(*front)(i,j)]--;
             int neigh_live = Neighbours(i,j,LLIVE);
             int current = (*front)(i,j);
 
-            if (current == LLIVE && survive.in(neigh_live)) (*back)(i,j) = LLIVE;
-            else (*back)(i,j) = LDEAD;
-
-            if (current == LDEAD && bear.in(neigh_live)) (*back)(i,j) = LLIVE;
-            else (*back)(i,j) = LDEAD;
+            if (current == LLIVE) {
+                if (survive.in(neigh_live))
+                    (*back)(i,j) = LLIVE;
+                else
+                    (*back)(i,j) = LDEAD;
+            } else { if (current == LDEAD)
+                if (bear.in(neigh_live))
+                    (*back)(i,j) = LLIVE;
+                else
+                    (*back)(i,j) = LDEAD;
+            }
             StateCount[(*back)(i,j)]++;
         }
     LMatrix <statecode> *temp;
@@ -85,4 +92,29 @@ void Automaton::Clear()
 void Automaton::ChangeSpeed(int speed)
 {
     counter_max = 100 - speed;
+}
+
+void Automaton::MouseMove(int x, int y)
+{
+    (*front)(x,y) = drawingnow;
+    emit updated();
+}
+
+
+void Automaton::MouseDown(int x, int y)
+{
+    statecode curr = (*front)(x,y);
+    drawingnow = 1 - curr;
+    (*front)(x,y) = drawingnow;
+    emit updated();
+}
+
+void Automaton::start()
+{
+    running = true;
+}
+
+void Automaton::stop()
+{
+    running = false;
 }

@@ -16,6 +16,10 @@ MainWindow::MainWindow(QWidget *parent) :
                          "23/3",
                          this);
 
+    graphics = new Graphics(ui->glView->width(),
+                            ui->glView->height(),
+                            this);
+
     connect(ui->pushButton,SIGNAL(clicked()),
             this->life, SLOT(Randomize()));
 
@@ -31,7 +35,20 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this->life,SIGNAL(updated()),
             ui->glView,SLOT(updateGL()));
 
+    connect(ui->glView, SIGNAL(mouseDown(int, int)),
+            this->life,SLOT(MouseDown(int, int)));
+
+    connect(ui->glView, SIGNAL(mouseMove(int, int)),
+            this->life, SLOT(MouseMove(int, int)));
+
+    connect(ui->glView, SIGNAL(pauseAutomaton()),
+            this->life, SLOT(stop()));
+
+    connect(ui->glView, SIGNAL(startAutomaton()),
+            this->life, SLOT(start()));
+
     ui->glView->setAutomaton(life);
+    ui->glView->setGraphics(graphics);
 
 }
 

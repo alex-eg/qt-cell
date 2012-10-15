@@ -10,40 +10,36 @@
 #include <math.h>
 #include "automaton.hpp"
 
-struct RelativePosition {
-    double x;
-    double y;
-};
-
-class Grid {
+class Grid : public QObject {
+    Q_OBJECT
 private:
     int  height, width, cellsize;
-    int dx, dy; //Displacement
     inline void FillCell(int x, int y, double *color);
 public:
-    Grid(int w, int h, int cllsz);
+    Grid(int w, int h, int cllsz, QObject *parent = 0);
     Grid &operator = (const Grid &right);
-    int GetHeight(void);
-    int GetWidth(void);
-    void Draw();
+    int GetHeight() const;
+    int GetWidth() const;
+    int GetCellsize() const;
+    void DrawGrid();
     void DrawWithMap(Automaton &M);
     void DrawBorder();
 };
 
-class Graphics {
-
+class Graphics : public Grid {
+    Q_OBJECT
 private:
-    int width, height; /* Viewport */
+    int vwidth, vheight; /* Viewport */
     double dx, dy; /* Viewport-scene relative displacement */
-    Grid *grid;
-    struct RelativePosition SDL_OGL;
 public:
-    Graphics();
-    Graphics(int w, int h);
+    Graphics(QObject *parent = 0);
+    Graphics(int w, int h, QObject *parent = 0);
     Graphics &operator = (const Graphics &right);
     void Draw(void);
     void Draw(Automaton &a);
     ~Graphics();
+    double Getdx();
+    double Getdy();
 };
 
 #endif

@@ -22,7 +22,10 @@ private:
     LMatrix <statecode> *back;
     Set <int> bear, survive;
     int Neighbours(int x, int y, statecode code) const;
+    statecode Cellcode(int x, int y);
     int counter, counter_max;
+    statecode drawingnow;
+    bool running;
 public:
     std::map <statecode, int> StateCount;
     LMatrix <statecode> *front;
@@ -55,6 +58,7 @@ public:
             int count = rule[i].toAscii() - ASCIIZEROCODE;
             survive.add(count);
         }
+        running = true;
     }
 
     Automaton &operator = (const Automaton &right)
@@ -80,6 +84,10 @@ public slots:
     void Clear();
     void Update();
     void ChangeSpeed(int speed);
+    void MouseMove(int x, int y);
+    void MouseDown(int x, int y);
+    void start();
+    void stop();
 signals:
     void updated();
 };

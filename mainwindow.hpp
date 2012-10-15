@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "ltimer.hpp"
 #include "automaton.hpp"
+#include "graphics.hpp"
 
 namespace Ui
 {
@@ -22,6 +23,7 @@ private:
     Ui::MainWindow *ui;
     LTimer *timer;
     Automaton *life;
+    Graphics *graphics;
 };
 
 #endif // MAINWINDOW_H
