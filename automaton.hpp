@@ -42,7 +42,7 @@ public:
         front = &field1;
         back = &field2;
         counter = 0;
-        counter_max = 50;
+        counter_max = 5;
 
         for (int i=0; i<aheight; i++)
             for (int j=0; j<awidth; j++)
@@ -90,5 +90,6 @@ public slots:
     void stop();
 signals:
     void updated();
+    void statusChanged(const QString &message, int timeout);
 };
 #endif

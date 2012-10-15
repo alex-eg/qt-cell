@@ -76,6 +76,7 @@ void Automaton::Randomize()
             StateCount[(*front)(i,j)]++;
         }
     emit updated();
+    statusChanged("Randomized", 3000);
 }
 
 void Automaton::Clear()
@@ -87,11 +88,12 @@ void Automaton::Clear()
             StateCount[0] = awidth*aheight;
         }
     emit updated();
+    emit statusChanged("Cleared", 3000);
 }
 
 void Automaton::ChangeSpeed(int speed)
 {
-    counter_max = 100 - speed;
+    counter_max = 20 - speed;
 }
 
 void Automaton::MouseMove(int x, int y)
@@ -111,10 +113,14 @@ void Automaton::MouseDown(int x, int y)
 
 void Automaton::start()
 {
+    if (running) return;
     running = true;
+    emit statusChanged("Started", 3000);
 }
 
 void Automaton::stop()
 {
+    if (!running) return;
     running = false;
+    emit statusChanged("Stopped", 3000);
 }

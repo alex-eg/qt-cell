@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
     timer = new LTimer(this);
     timer->start(10);
 
-    setFixedSize(800,600);
+    setFixedSize(840,600);
     ui->setupUi(this);
 
     life = new Automaton(40,
@@ -46,6 +46,15 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->glView, SIGNAL(startAutomaton()),
             this->life, SLOT(start()));
+
+    connect(ui->pushButton_5, SIGNAL(clicked()),
+            this->life, SLOT(stop()));
+
+    connect(ui->pushButton_4, SIGNAL(clicked()),
+            this->life, SLOT(start()));
+
+    connect(this->life, SIGNAL(statusChanged(QString,int)),
+            ui->statusBar, SLOT(showMessage(QString,int)));
 
     ui->glView->setAutomaton(life);
     ui->glView->setGraphics(graphics);
