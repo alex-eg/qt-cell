@@ -5,7 +5,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    timer = new LTimer(this);
+    timer = new QTimer(this);
     timer->start(10);
 
     setFixedSize(840,600);

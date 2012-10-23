@@ -16,13 +16,11 @@ QMAKE_EXT_H = .hpp
 HEADERS += \
     glwidget.hpp \
     mainwindow.hpp \
-    ltimer.hpp \
     graphics.hpp \
     lmatrix.hpp \
     set.hpp \
     automaton.hpp
 FORMS += mainwindow.ui
 SOURCES += glwidget.cpp main.cpp mainwindow.cpp \
-    ltimer.cpp \
     automaton.cpp \
     graphics.cpp

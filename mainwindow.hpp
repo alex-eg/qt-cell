@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "ltimer.hpp"
+#include <QTimer>
 #include "automaton.hpp"
 #include "graphics.hpp"
 
@@ -21,7 +21,7 @@ public:
     void keyPressEvent(QKeyEvent *event);
 private:
     Ui::MainWindow *ui;
-    LTimer *timer;
+    QTimer *timer;
     Automaton *life;
     Graphics *graphics;
 };

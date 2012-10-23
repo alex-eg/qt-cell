@@ -5,7 +5,7 @@
 void Automaton::Update(void)
 {
     if (!running) return;
-    if (counter_max == 100) return;
+    if (counter_max == 20) return;
     if (counter < counter_max) {
         counter++;
         return;

@@ -34,7 +34,7 @@ public:
         return (*front)(i,j);
     }
     
-    Automaton(int w, int h, QString rule, QObject *parent=0) :
+    Automaton(int w=40, int h=40, QString rule="23/3", QObject *parent=0) :
         awidth(w), aheight(h), QObject(parent)
     {
         field1 = LMatrix <statecode> (awidth, aheight);
