@@ -12,7 +12,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>840</width>
+    <width>1100</width>
     <height>600</height>
    </rect>
   </property>
@@ -29,7 +29,7 @@
    <widget class="GLWidget" name="glView" native="true">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>270</x>
       <y>10</y>
       <width>600</width>
       <height>530</height>
@@ -39,7 +39,7 @@
    <widget class="QFrame" name="frame">
     <property name="geometry">
      <rect>
-      <x>620</x>
+      <x>880</x>
       <y>10</y>
       <width>211</width>
       <height>530</height>
@@ -160,13 +160,23 @@
      </layout>
     </widget>
    </widget>
+   <widget class="RTerminal" name="plainTextEdit">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>250</width>
+      <height>530</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>840</width>
+     <width>1100</width>
      <height>21</height>
     </rect>
    </property>
@@ -190,8 +200,13 @@
   <customwidget>
    <class>GLWidget</class>
    <extends>QWidget</extends>
-   <header location="global">glwidget.hpp</header>
+   <header>glwidget.hpp</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>RTerminal</class>
+   <extends>QPlainTextEdit</extends>
+   <header>rterminal.hpp</header>
   </customwidget>
  </customwidgets>
  <resources/>

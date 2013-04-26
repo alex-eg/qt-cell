@@ -3,12 +3,6 @@
 GLWidget::GLWidget(QWidget *parent) : QGLWidget(parent)
 {
     setMouseTracking(true);
-
-}
-
-GLWidget::~GLWidget()
-{
-
 }
 
 void GLWidget::initializeGL(void)
@@ -24,8 +18,6 @@ void GLWidget::initializeGL(void)
     glLoadIdentity();
     glOrtho(0, w, h, 0, -1, 1);
     glMatrixMode(GL_MODELVIEW);
-    glTranslatef(0.375, 0.375, 0.0);
-
 }
 
 void GLWidget::resizeGL(int w, int h)
@@ -35,7 +27,6 @@ void GLWidget::resizeGL(int w, int h)
     glLoadIdentity();
     glOrtho(0, w, h, 0, -1, 1);
     glMatrixMode(GL_MODELVIEW);
-    glTranslatef(0.375, 0.375, 0.0);
 }
 
 void GLWidget::paintGL()
@@ -57,10 +48,10 @@ void GLWidget::mousePressEvent(QMouseEvent *event)
 
     double dx = g->Getdx();
     double dy = g->Getdy();
-
-    if (x < dx || x > (40 * clsz + 40 + dx)) return;
-    if (y < dy || y > (40 * clsz + 40 + dy)) return;
-
+#define cellCount 30
+    if (x < dx || x > (cellCount * clsz + cellCount + dx)) return;
+    if (y < dy || y > (cellCount * clsz + cellCount + dy)) return;
+#undef cellCount
     int xcell = (x - dx - 1) / (clsz + 1);
     int ycell = (y - dy - 1) / (clsz + 1);
 
@@ -76,12 +67,12 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
     int y = event->y();
 
     int clsz = g->GetCellsize();
-
+    int cellCount = life->getCellCount();
     double dx = g->Getdx();
     double dy = g->Getdy();
 
-    if (x < dx || x > (40 * clsz + 40 + dx)) return;
-    if (y < dy || y > (40 * clsz + 40 + dy)) return;
+    if (x < dx || x > (cellCount * clsz + cellCount + dx)) return;
+    if (y < dy || y > (cellCount * clsz + cellCount + dy)) return;
 
     int xcell = (x - dx - 1) / (clsz + 1);
     int ycell = (y - dy - 1) / (clsz + 1);
@@ -97,7 +88,7 @@ void GLWidget::mouseReleaseEvent(QMouseEvent *event)
 
 void GLWidget::setAutomaton(Automaton* aut)
 {
-    life=aut;
+    life = aut;
 }
 
 void GLWidget::setGraphics(Graphics *gr)

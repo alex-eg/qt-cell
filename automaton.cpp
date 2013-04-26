@@ -19,15 +19,16 @@ void Automaton::Update(void)
             int current = (*front)(i,j);
 
             if (current == LLIVE) {
-                if (survive.in(neigh_live))
+                if (survive.contains(neigh_live))
                     (*back)(i,j) = LLIVE;
                 else
                     (*back)(i,j) = LDEAD;
-            } else { if (current == LDEAD)
-                if (bear.in(neigh_live))
+            } else { if (current == LDEAD) {
+                if (bear.contains(neigh_live))
                     (*back)(i,j) = LLIVE;
                 else
                     (*back)(i,j) = LDEAD;
+                }
             }
             StateCount[(*back)(i,j)]++;
         }
@@ -65,6 +66,11 @@ void Automaton::Draw(int x, int y, statecode val)
     StateCount[(*front)(x,y)]--;
     (*front)(x,y) = val;
     StateCount[(*front)(x,y)]++;
+}
+
+int Automaton::getCellCount()
+{
+    return cellCount;
 }
 
 void Automaton::Randomize()

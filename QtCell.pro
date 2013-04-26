@@ -18,9 +18,10 @@ HEADERS += \
     mainwindow.hpp \
     graphics.hpp \
     lmatrix.hpp \
-    set.hpp \
-    automaton.hpp
+    automaton.hpp \
+    rterminal.hpp
 FORMS += mainwindow.ui
 SOURCES += glwidget.cpp main.cpp mainwindow.cpp \
     automaton.cpp \
-    graphics.cpp
+    graphics.cpp \
+    rterminal.cpp

@@ -13,18 +13,23 @@
 class Grid : public QObject {
     Q_OBJECT
 private:
-    int  height, width, cellsize;
+    int  cellCount, cellSize; /* Grid dimensions */
     inline void FillCell(int x, int y, double *color);
 public:
-    Grid(int w, int h, int cllsz, QObject *parent = 0);
+    Grid(int cllcnt, int cllsz, QObject *parent = 0);
     Grid &operator = (const Grid &right);
     int GetHeight() const;
     int GetWidth() const;
     int GetCellsize() const;
+    int GetCellCount() const;
     void DrawGrid();
-    void DrawWithMap(Automaton &M);
+    void DrawWithMap(Automaton &a);
     void DrawBorder();
 };
+
+
+/*---==============================================---*/
+
 
 class Graphics : public Grid {
     Q_OBJECT
@@ -37,7 +42,6 @@ public:
     Graphics &operator = (const Graphics &right);
     void Draw(void);
     void Draw(Automaton &a);
-    ~Graphics();
     double Getdx();
     double Getdy();
 };

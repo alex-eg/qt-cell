@@ -15,7 +15,6 @@ private:
     Automaton *life;
 public:
     GLWidget(QWidget *parent = 0);
-    ~GLWidget();
     void setAutomaton(Automaton* aut);
     void setGraphics(Graphics* gr);
 protected:

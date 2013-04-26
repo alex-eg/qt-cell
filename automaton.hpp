@@ -2,7 +2,7 @@
 #define _L_AUTOMATON
 
 #include "lmatrix.hpp"
-#include "set.hpp"
+#include <QSet>
 #include <QString>
 #include <QObject>
 #include <map>
@@ -16,11 +16,14 @@ typedef unsigned char statecode;
 class Automaton : public QObject {
     Q_OBJECT
 private:
+    int cellCount;
+
     int awidth, aheight;
+
     LMatrix <statecode> field1;
     LMatrix <statecode> field2;
     LMatrix <statecode> *back;
-    Set <int> bear, survive;
+    QSet <int> bear, survive;
     int Neighbours(int x, int y, statecode code) const;
     statecode Cellcode(int x, int y);
     int counter, counter_max;
@@ -34,11 +37,13 @@ public:
         return (*front)(i,j);
     }
     
-    Automaton(int w=40, int h=40, QString rule="23/3", QObject *parent=0) :
-        awidth(w), aheight(h), QObject(parent)
+    Automaton(int cellCount=40, QString rule="23/3", QObject *parent=0) :
+         QObject(parent), cellCount(cellCount)
     {
-        field1 = LMatrix <statecode> (awidth, aheight);
-        field2 = LMatrix <statecode> (awidth, aheight);
+        awidth = 600;
+        aheight = 600;
+        field1 = LMatrix <statecode> (aheight, awidth);
+        field2 = LMatrix <statecode> (aheight, awidth);
         front = &field1;
         back = &field2;
         counter = 0;
@@ -52,11 +57,11 @@ public:
         int find = rule.indexOf("/");
         for (int i = find+1; i<rule.length(); i++) {
             int count = rule[i].toAscii() - ASCIIZEROCODE;
-            bear.add(count);
+            bear.insert(count);
         }
         for (int i = 0; i<find; i++) {
             int count = rule[i].toAscii() - ASCIIZEROCODE;
-            survive.add(count);
+            survive.insert(count);
         }
         running = true;
     }
@@ -65,9 +70,7 @@ public:
     {
         if (this == &right)
             return *this;
-        awidth = right.awidth;
-        aheight = right.aheight;
-
+        cellCount = right.cellCount;
         field1 = right.field1;
         field2 = right.field2;
         bear = right.bear;
@@ -78,7 +81,7 @@ public:
         return *this;
     }
     void Draw(int x, int y, statecode val);
-
+    int getCellCount();
 public slots:
     void Randomize();
     void Clear();

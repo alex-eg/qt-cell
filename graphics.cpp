@@ -1,31 +1,25 @@
 #include "graphics.hpp"
 
-Grid::Grid(int w, int h, int cllsz, QObject *parent) :
-    height(h), width(w), cellsize(cllsz), QObject(parent){}
+Grid::Grid(int cllcnt, int cllsz, QObject *parent) :
+    QObject(parent), cellCount(cllcnt), cellSize(cllsz){}
 
 Grid &Grid::operator =(const Grid &right)
 {
     if (this == &right)
         return *this;
-    width = right.width;
-    height = right.height;
-    cellsize = right.cellsize;
+    cellCount = right.cellCount;
+    cellSize = right.cellSize;
     return *this;
 }
 
-int Grid::GetHeight() const
+int Grid::GetCellCount() const
 {
-    return height;
-}
-
-int Grid::GetWidth() const
-{
-    return width;
+    return cellCount;
 }
 
 int Grid::GetCellsize() const
 {
-    return cellsize;
+    return cellSize;
 }
 
 void Grid::DrawBorder()
@@ -33,51 +27,51 @@ void Grid::DrawBorder()
     glColor3f(0.5, 0.5, 0.5);
     glBegin(GL_LINES);
     glVertex2f(0, 0);
-    glVertex2f(0, (cellsize+1)*height+1);
+    glVertex2f(0, (cellSize+1)*cellCount+1);
     glEnd();
 
     glBegin(GL_LINES);
-    glVertex2f((cellsize+1)*width, 0);
-    glVertex2f((cellsize+1)*width, (cellsize+1)*height+1);
+    glVertex2f((cellSize+1)*cellCount, 0);
+    glVertex2f((cellSize+1)*cellCount, (cellSize+1)*cellCount+1);
     glEnd();
 
     glBegin(GL_LINES);
     glVertex2f(0, 0);
-    glVertex2f((cellsize+1)*width, 0);
+    glVertex2f((cellSize+1)*cellCount, 0);
     glEnd();
 
     glBegin(GL_LINES);
-    glVertex2f(0, (cellsize+1)*width);
-    glVertex2f((cellsize+1)*width, (cellsize+1)*width);
+    glVertex2f(0, (cellSize+1)*cellCount);
+    glVertex2f((cellSize+1)*cellCount, (cellSize+1)*cellCount);
     glEnd();
 }
 
 void Grid::DrawGrid()
 {
     glColor3f(0.8, 0.8, 0.8);
-    for(int i = 1; i<=width; i++) {
-        if (i == width/2) glColor3f(0.2, 0.723, 0.32);
+    for(int i = 1; i<=cellCount; i++) {
+        if (i == cellCount/2) glColor3f(0.2, 0.723, 0.32);
         glBegin(GL_LINES);
-        glVertex2f(cellsize*i+i, 0);
-        glVertex2f(cellsize*i+i, (cellsize+1)*height);
+        glVertex2f(cellSize*i+i, 0);
+        glVertex2f(cellSize*i+i, (cellSize+1)*cellCount);
         glEnd();
-        if (i == width/2) glColor3f(0.8, 0.8, 0.8);
+        if (i == cellCount/2) glColor3f(0.8, 0.8, 0.8);
     }
-    for(int i = 1; i<=height; i++) {
-        if (i == height/2) glColor3f(0.2, 0.723, 0.32);
+    for(int i = 1; i<=cellCount; i++) {
+        if (i == cellCount/2) glColor3f(0.2, 0.723, 0.32);
         glBegin(GL_LINES);
-        glVertex2f(0, cellsize*i+i);
-        glVertex2f((cellsize+1)*width, cellsize*i+i);
+        glVertex2f(0, cellSize*i+i);
+        glVertex2f((cellSize+1)*cellCount, cellSize*i+i);
         glEnd();
-        if (i == width/2) glColor3f(0.8, 0.8, 0.8);
+        if (i == cellCount/2) glColor3f(0.8, 0.8, 0.8);
     }
 }
 
-void Grid::DrawWithMap(Automaton &life)
+void Grid::DrawWithMap(Automaton &a)
 {
-    for (int i=0; i<height; i++)
-        for(int j=0; j<width; j++) {
-            statecode cell_state = life(i,j);
+    for (int i=0; i<cellCount; i++)
+        for(int j=0; j<cellCount; j++) {
+            statecode cell_state = a(i,j);
             double lcolor[3];
             if (cell_state == LLIVE) {
                 lcolor[0] = 0.3;
@@ -96,7 +90,7 @@ inline void Grid::FillCell(int x, int y, double *color)
 {
     glColor3f(color[0], color[1], color[2]);
     glBegin(GL_QUADS);
-#define CSZ (cellsize+1)
+#define CSZ (cellSize+1)
     glVertex2f(CSZ*x+1, CSZ*y+1);
     glVertex2f(CSZ*x+CSZ, CSZ*y+1);
     glVertex2f(CSZ*x+CSZ, CSZ*y+CSZ);
@@ -107,14 +101,9 @@ inline void Grid::FillCell(int x, int y, double *color)
 
 
 /* --=== Graphics class ===-- */
-Graphics::Graphics(QObject *parent) : Grid(40,40,10,parent)
+Graphics::Graphics(QObject *parent) : Grid(40,10,parent)
 {
     vwidth = vheight = 800;
-}
-
-Graphics::~Graphics()
-{
-
 }
 
 double Graphics::Getdx()
@@ -128,9 +117,8 @@ double Graphics::Getdy()
 }
 
 Graphics::Graphics(int w, int h, QObject *parent) :
-    vwidth(w), vheight(h), Grid(40,40,10,parent)
+     Grid(40,10,parent), vwidth(w), vheight(h)
 {
-
     dx = (vwidth - 40 * 10 - 40) / 2;
     dy = (vheight - 40 * 10 - 40) / 2;
 }

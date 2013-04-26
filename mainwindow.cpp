@@ -8,11 +8,10 @@ MainWindow::MainWindow(QWidget *parent) :
     timer = new QTimer(this);
     timer->start(10);
 
-    setFixedSize(840,600);
+    setFixedSize(1100,600);
     ui->setupUi(this);
 
     life = new Automaton(40,
-                         40,
                          "23/3",
                          this);
 
@@ -20,6 +19,14 @@ MainWindow::MainWindow(QWidget *parent) :
                             ui->glView->height(),
                             this);
 
+
+
+    initConnections();
+    initComponents();
+}
+
+void MainWindow::initConnections()
+{
     connect(ui->pushButton,SIGNAL(clicked()),
             this->life, SLOT(Randomize()));
 
@@ -55,10 +62,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(this->life, SIGNAL(statusChanged(QString,int)),
             ui->statusBar, SLOT(showMessage(QString,int)));
+}
 
+void MainWindow::initComponents()
+{
     ui->glView->setAutomaton(life);
     ui->glView->setGraphics(graphics);
-
 }
 
 MainWindow::~MainWindow()

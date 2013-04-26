@@ -14,7 +14,9 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-    
+private:
+    void initComponents();
+    void initConnections();
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
